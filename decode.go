@@ -181,6 +181,26 @@ func unmarshalReflect(av *dynamodb.AttributeValue, rv reflect.Value) error {
 					if err := tm.UnmarshalText([]byte(k)); err != nil {
 						return fmt.Errorf("dynamo: unmarshal map: key error: %v", err)
 					}
+				} else if kv.Kind() == reflect.Int ||
+					kv.Kind() == reflect.Int8 ||
+					kv.Kind() == reflect.Int16 ||
+					kv.Kind() == reflect.Int32 ||
+					kv.Kind() == reflect.Int64 {
+					i, err := strconv.ParseInt(k, 10, 64)
+					if err != nil {
+						return err
+					}
+					kv.SetInt(i)
+				} else if kv.Kind() == reflect.Uint ||
+					kv.Kind() == reflect.Uint8 ||
+					kv.Kind() == reflect.Uint16 ||
+					kv.Kind() == reflect.Uint32 ||
+					kv.Kind() == reflect.Uint64 {
+					ui, err := strconv.ParseUint(k, 10, 64)
+					if err != nil {
+						return err
+					}
+					kv.SetUint(ui)
 				} else {
 					kv.SetString(k)
 				}

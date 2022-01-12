@@ -278,6 +278,22 @@ func marshalReflect(rv reflect.Value, flags encodeFlags) (*dynamodb.AttributeVal
 			keyString = func(k reflect.Value) (string, error) {
 				return k.String(), nil
 			}
+		} else if ktype.Kind() == reflect.Int ||
+			ktype.Kind() == reflect.Int8 ||
+			ktype.Kind() == reflect.Int16 ||
+			ktype.Kind() == reflect.Int32 ||
+			ktype.Kind() == reflect.Int64 {
+			keyString = func(k reflect.Value) (string, error) {
+				return strconv.FormatInt(k.Int(), 10), nil
+			}
+		} else if ktype.Kind() == reflect.Uint ||
+			ktype.Kind() == reflect.Uint8 ||
+			ktype.Kind() == reflect.Uint16 ||
+			ktype.Kind() == reflect.Uint32 ||
+			ktype.Kind() == reflect.Uint64 {
+			keyString = func(k reflect.Value) (string, error) {
+				return strconv.FormatUint(k.Uint(), 10), nil
+			}
 		} else {
 			return nil, fmt.Errorf("dynamo marshal: map key must be string: %T", rv.Interface())
 		}
